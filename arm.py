@@ -38,65 +38,74 @@
 
 import rospy
 from std_msgs.msg import String
-import requests
+from sensor_msgs.msg import Joy
 import time
-import RPi.GPIO as GPIO
-GPIO.setmode(GPIO.BCM)
+import maestro
 
-InternetFail = 0
-urlTest = urlTest='https://www.google.com/'
-timeoutTest=1
-GPIO.setup(26, GPIO.OUT)
-GPIO.setup(20, GPIO.OUT)
-GPIO.setup(21, GPIO.OUT)
-GPIO.setup(17,GPIO.OUT)
-Index = GPIO.PWM(17,500)
-Index.start(0)
-time.sleep(3)
-
-def talker():
-    global InternetFail, urlTest, timeoutTest
-    pub = rospy.Publisher('url_test', String, queue_size=10)
-    rospy.init_node('communications', anonymous=True)
-    rospy.loginfo("Testing URL")
-    rate = rospy.Rate(10) # 10hz
-    while not rospy.is_shutdown():
-        try:
-            r = requests.get(urlTest, timeout=timeoutTest)
-            Internet_test = "Internet Ok %s" % rospy.get_time()
-            rospy.loginfo(Internet_test)
-            pub.publish(Internet_test)
-            InternetFail=0
-            OK()
-        except requests.ConnectionError:
-            Internet_test = "Internet FAIL %s" % rospy.get_time()
-            rospy.loginfo(Internet_test)
-            pub.publish(Internet_test)
-            InternetFail=InternetFail+1
-            if(InternetFail>=2):
-                print("-------------------------------")
-                print("No internet 2 times. \n")
-                print("-------------------------------")
-                noConnection()
-        rate.sleep()
-
-def noConnection():
-    print "PAILA"
-    GPIO.output(21, 1)  # turn on
+servo = maestro.Controller()
+servo.setRange(0,0,9000) # Motor Base
+servo.setRange(1,0,9000) # Motor Yaw
+servo.setRange(2,0,9000) # Joint 3
+servo.setRange(3,0,9000) # Joint 2
+servo.setRange(4,0,9000) # Gripper
+servo.setRange(5,0,9000)
+servo.setRange(6,0,9000)
+servo.setRange(7,0,9000)
+servo.setRange(8,0,9000)
+servo.setAccel(0,4)
+servo.setAccel(1,4)
+ 
+def callback(data):
+    buttons = data.buttons;
+    axes = data.axes
+    move(buttons, axes)
+    #rospy.loginfo(rospy.get_caller_id() + "I heard %s", data)
+def move(buttons, axes):
+    print "Moving"
+    if buttons[7]==1 and axes[7]==1:  #Start + up
+	home()
+    elif buttons[7]==1 and axes[7]==-1:  #Start + down
+	tunnel()
+    elif buttons[6]==1:  #Back
+	free()
+def home():
+    print "home"
+    servo.setTarget(0,3000)
     time.sleep(0.5)
-    GPIO.output(21, 0)  # turn off
+    servo.setTarget(0,0)
+    servo.setTarget(1,9000)
     time.sleep(0.5)
-    GPIO.output(21, 1)  # turn on
+    servo.setTarget(1,0)
+    servo.setTarget(3,3000)
+    time.sleep(0.5)
+    servo.setTarget(3,0)
+    servo.setTarget(2,4500)
+    time.sleep(0.5)
+    servo.setTarget(2,0)
+    servo.setTarget(4,5500)
+def tunnel():
+    servo.setTarget(0,3000)
+    time.sleep(0.5)
+    servo.setTarget(0,0)
+    servo.setTarget(1,6000)
+    #servo.setTarget(3,4000)
+    #servo.setTarget(2,4500)
+    #servo.setTarget(4,5500)
+def free():
+    servo.setTarget(0,0)
+    servo.setTarget(1,0)
+    servo.setTarget(2,0)
+    servo.setTarget(3,0)
+    servo.setTarget(4,0)
+def ARM():
+    rospy.init_node('rover_arm', anonymous=True)
+    rospy.Subscriber("/joy", Joy, callback)
+    rospy.spin()
 
-def OK():
-    print "bien"
-    GPIO.output(26, 0)
-    GPIO.output(20, 0)
-    GPIO.output(21, 0)
-    Index.ChangeDutyCycle(50)
+
 
 if __name__ == '__main__':
     try:
-        talker()
+        ARM()
     except rospy.ROSInterruptException:
         pass

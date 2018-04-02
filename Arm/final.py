@@ -1,8 +1,3 @@
-""" Las funciones son 3, recoger, elongar y MoverBrazo, enlongar recibe 4 argumentos,
-las posiciones del servo 1,2 y 3 para moverser de abajo hacia arriba, la funciion recoger recibe los mismos tres aeguemntos
-pero mueve los servos desde arriba hacia Abajo, es decir desde el ultimo al primero. La funcion Mover servo recibe
-cuatro argumentos, la direccion del servo [0 ó 1] la velocidad del servo[0,12] ideal 0, el movimiento que se quiere realizar , y el servo que se quiere mover[0,5]. 
-""""ssss
 import time,Funciones
 import prueba #Libreria del teclado
 Te=prueba._Getch()
@@ -20,10 +15,9 @@ tt=0
 while 1:
     teclaPulsada=Te.__call__()
     Sel=(teclaPulsada)
-    print Sel
-
-
+    print "Sel: "+ Sel
     if Sel=='r':
+	print "oprimiendo R"
         Mov.Elongar(6000,9000,7320,0) #p1,p2,p3,Velocidad
     if Sel=='d':
         motor=0

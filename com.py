@@ -44,7 +44,7 @@ import RPi.GPIO as GPIO
 GPIO.setmode(GPIO.BCM)
 
 InternetFail = 0
-urlTest = urlTest='https://www.google.com/'
+urlTest = urlTest='http://192.168.1.101'
 timeoutTest=1
 GPIO.setup(26, GPIO.OUT)
 GPIO.setup(20, GPIO.OUT)
@@ -59,7 +59,7 @@ def talker():
     pub = rospy.Publisher('url_test', String, queue_size=10)
     rospy.init_node('communications', anonymous=True)
     rospy.loginfo("Testing URL")
-    rate = rospy.Rate(10) # 10hz
+    rate = rospy.Rate(5) # 10hz
     while not rospy.is_shutdown():
         try:
             r = requests.get(urlTest, timeout=timeoutTest)
@@ -69,7 +69,7 @@ def talker():
             InternetFail=0
             OK()
         except requests.ConnectionError:
-            Internet_test = "Internet FAIL %s" % rospy.get_time()
+            Internet_test = "Internet FAIL"
             rospy.loginfo(Internet_test)
             pub.publish(Internet_test)
             InternetFail=InternetFail+1
@@ -83,17 +83,16 @@ def talker():
 def noConnection():
     print "PAILA"
     GPIO.output(21, 1)  # turn on
+    GPIO.output(20, 0)  # turn off
     time.sleep(0.5)
+    GPIO.output(20, 1)  # turn on
     GPIO.output(21, 0)  # turn off
     time.sleep(0.5)
     GPIO.output(21, 1)  # turn on
+    GPIO.output(20, 0)  # turn on
 
 def OK():
     print "bien"
-    GPIO.output(26, 0)
-    GPIO.output(20, 0)
-    GPIO.output(21, 0)
-    Index.ChangeDutyCycle(50)
 
 if __name__ == '__main__':
     try:

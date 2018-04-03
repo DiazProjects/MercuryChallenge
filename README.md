@@ -16,6 +16,7 @@ The following steps describe how to install in the raspberry pi the Mercury-Cont
 * Install Git: sudo apt-get install git-core
 * Install GPIO: sudo apt-get install python-rpi.gpio [25,28, 29]
 * Install Requests: pip install requests
+* Install [Hamachi](https://medium.com/@KyleARector/logmein-hamachi-on-raspberry-pi-ad2ba3619f3a)
 
 ## USB Rules
 * udevadm info -a -n /dev/ttyUSB1 | grep

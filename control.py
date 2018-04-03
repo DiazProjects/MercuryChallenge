@@ -58,6 +58,10 @@ def callback(data):
     outs(buttons)
     move(buttons, axes)
     #rospy.loginfo(rospy.get_caller_id() + "I heard %s", data)
+def callback2(data):
+    if data.data == "Internet FAIL":
+    	rc.ForwardBackwardM1(address,64)
+    	rc.ForwardBackwardM2(address,64)
 def outs(buttons):
     if buttons[4]==1 and buttons[0]==1:
         rospy.loginfo("Laser ON")
@@ -75,7 +79,7 @@ def move(buttons, axes):
     rospy.loginfo("Left Motor %s", ML)
     rospy.loginfo("Right Motor %s", MR)
     if(buttons[4]==1):
-        G=32.0 # max=64
+        G=50.0 # max=64
     else:
         G=0.0
     U_R =int(MR*G)
@@ -86,7 +90,8 @@ def move(buttons, axes):
 
 def controller():
     rospy.init_node('control', anonymous=True)
-    rospy.Subscriber("/joy", Joy, callback)
+    rospy.Subscriber("/joy", Joy, callback) 
+    rospy.Subscriber("/url_test", String, callback2)
     rospy.spin()
 
 

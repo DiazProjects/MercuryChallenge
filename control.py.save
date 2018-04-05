@@ -39,7 +39,7 @@
 import rospy
 from std_msgs.msg import String
 from sensor_msgs.msg import Joy
-import time, os
+import time
 from roboclaw import Roboclaw
 import RPi.GPIO as GPIO
 GPIO.setmode(GPIO.BCM)
@@ -51,23 +51,14 @@ GPIO.setup(21, GPIO.OUT) #Lasers
 rc = Roboclaw("/dev/tty_roboclaw",115200)
 rc.Open()
 address = 0x80
-int_OK=1
 
 def callback(data):
     buttons = data.buttons;
     axes = data.axes
-    if int_OK == 1:
-	outs(buttons, axes)
-	move(buttons, axes)
+    outs(buttons)
+    move(buttons, axes)
     #rospy.loginfo(rospy.get_caller_id() + "I heard %s", data)
-def callback2(data):
-    if data.data == "Internet FAIL":
-    	rc.ForwardBackwardM1(address,64)
-    	rc.ForwardBackwardM2(address,64)
-	int_OK=0
-    else:
-	int_OK=1
-def outs(buttons,axes):
+def outs(buttons):
     if buttons[4]==1 and buttons[0]==1:
         rospy.loginfo("Laser ON")
 	GPIO.output(21, 0)  # turn on
@@ -78,15 +69,13 @@ def outs(buttons,axes):
         rospy.loginfo("Lights OFF")
 	GPIO.output(21, 1)  # turn off
 	GPIO.output(20, 1)  # turn off
-    elif axes[2]==-1 and axes[5]==-1 and buttons[0]==1 and buttons[2]==1:
-        os.system("sudo reboot")
 def move(buttons, axes):
     ML = axes[0];
     MR = axes[4];
     rospy.loginfo("Left Motor %s", ML)
     rospy.loginfo("Right Motor %s", MR)
     if(buttons[4]==1):
-        G=50.0 # max=64
+        G=32.0 # max=64
     else:
         G=0.0
     U_R =int(MR*G)
@@ -94,11 +83,12 @@ def move(buttons, axes):
     rc.ForwardBackwardM2(address,64+U_R+U_L)	#1/4 power forward
     rc.ForwardBackwardM1(address,64+U_R-U_L)	#1/4 power backward
 
+n
+
 
 def controller():
     rospy.init_node('control', anonymous=True)
-    rospy.Subscriber("/joy", Joy, callback) 
-    rospy.Subscriber("/url_test", String, callback2)
+    rospy.Subscriber("/joy", Joy, callback)
     rospy.spin()
 
 

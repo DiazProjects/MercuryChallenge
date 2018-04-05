@@ -20,43 +20,27 @@
 #
 # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
 # "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
-# FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-# COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-# INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
-# BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-# LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-# LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
-# ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-# POSSIBILITY OF SUCH DAMAGE.
-#
-# Revision $Id$
-
-## Simple talker demo that published std_msgs/Strings messages
-## to the 'chatter' topic
-
 import rospy
 from std_msgs.msg import String
 import requests
-import time
+import time, os
 import RPi.GPIO as GPIO
 GPIO.setmode(GPIO.BCM)
 
 InternetFail = 0
-urlTest = urlTest='http://192.168.1.101'
-timeoutTest=1
+urlTest='http://www.google.com'
+#urlTest=http://25.21.73.120
+#utlTest='http://'+os.environ(ROS_PILOT)
+timeoutTest=2
 GPIO.setup(26, GPIO.OUT)
 GPIO.setup(20, GPIO.OUT)
 GPIO.setup(21, GPIO.OUT)
 GPIO.setup(17,GPIO.OUT)
-Index = GPIO.PWM(17,500)
-Index.start(0)
 time.sleep(3)
 
 def talker():
     global InternetFail, urlTest, timeoutTest
-    pub = rospy.Publisher('url_test', String, queue_size=10)
+    pub = rospy.Publisher('url_Test', String, queue_size=10)
     rospy.init_node('communications', anonymous=True)
     rospy.loginfo("Testing URL")
     rate = rospy.Rate(5) # 10hz
@@ -73,7 +57,7 @@ def talker():
             rospy.loginfo(Internet_test)
             pub.publish(Internet_test)
             InternetFail=InternetFail+1
-            if(InternetFail>=2):
+            if(InternetFail>=1):
                 print("-------------------------------")
                 print("No internet 2 times. \n")
                 print("-------------------------------")
@@ -81,7 +65,7 @@ def talker():
         rate.sleep()
 
 def noConnection():
-    print "PAILA"
+    print "NO NONNECTION"
     GPIO.output(21, 1)  # turn on
     GPIO.output(20, 0)  # turn off
     time.sleep(0.5)

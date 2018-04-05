@@ -19,23 +19,6 @@
 #    contributors may be used to endorse or promote products derived
 #    from this software without specific prior written permission.
 #
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
-# FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
-# COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-# INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
-# BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-# LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-# LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
-# ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-# POSSIBILITY OF SUCH DAMAGE.
-#
-# Revision $Id$
-
-## Simple talker demo that published std_msgs/Strings messages
-## to the 'chatter' topic
 
 import rospy
 from std_msgs.msg import String
@@ -185,7 +168,8 @@ def move_arm(ch,dir,g):
         elif U<1000:
                 U=1000
         servo.setTarget(4,int(U))
-    #arm_state =  str([servo.getPosition(0),servo.getPosition(1),servo.getPosition(2),servo.getPosition(3),servo.getPosition(4)])
+    arm_state =  str([servo.getPosition(0),servo.getPosition(1),servo.getPosition(2),servo.getPosition(3),servo.getPosition(4)])
+    print str(arm_state)
     #rospy.loginfo(arm_state)
     #pub = rospy.Publisher('arm_string', String, queue_size=10)
     #pub.publish(arm_state)

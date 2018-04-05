@@ -17,6 +17,16 @@ The following steps describe how to install in the raspberry pi the Mercury-Cont
 * Install GPIO: sudo apt-get install python-rpi.gpio [25,28, 29]
 * Install Requests: pip install requests
 * Install [Hamachi](https://medium.com/@KyleARector/logmein-hamachi-on-raspberry-pi-ad2ba3619f3a)
+* Install URG_node: sudo apt-get install ros-kinetic-urg-node
+* rosparam set hokuyo_node/calibrate_time false
+* rosparam set hokuyo_node/port /dev/ttyACM0
+* rosrun hokuyo_node hokuyo_node
+* remove sudo --pass:
+* sudo visudo
+* root    ALL=(ALL:ALL) ALL
+* %admin ALL=(ALL) NOPASSWD: ALL
+* %sudo   ALL=(ALL:ALL) NOPASSWD: ALL
+* where "admin" is the usser name
 
 ## USB Rules
 * udevadm info -a -n /dev/ttyUSB1 | grep

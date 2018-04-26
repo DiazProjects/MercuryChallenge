@@ -43,6 +43,7 @@ import time, os
 from roboclaw import Roboclaw
 import RPi.GPIO as GPIO
 GPIO.setmode(GPIO.BCM)
+GPIO.setwarnings(False)
 
 GPIO.setup(26, GPIO.OUT)
 GPIO.setup(20, GPIO.OUT) #Leds

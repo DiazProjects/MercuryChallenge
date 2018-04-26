@@ -121,14 +121,16 @@ def ARM():
     pub = rospy.Publisher('arm_string', String, queue_size=10)
     rospy.init_node('rover_arm', anonymous=True)
     arm_state =  str([servo.getPosition(0),servo.getPosition(1),servo.getPosition(2),servo.getPosition(3),servo.getPosition(4)])
-    rospy.loginfo(arm_state)
-    pub.publish("arm state"+arm_state)
+    #rospy.loginfo(arm_state)
+    #pub.publish("arm state"+arm_state)
     rospy.Subscriber("/joy", Joy, callback)
     rospy.spin()
 def move_arm(ch,dir,g):
-    global arm_state
+    print "Moviendo"
+    #global arm_state
     G=(-g+1.0)/(2.0)*1000.0
     if ch==0:
+	print "base"
 	servo.setAccel(0,4)
 	U = servo.getPosition(0)+dir*G
 	if U>9000:
